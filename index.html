@@ -52,6 +52,149 @@
     height:auto;
   }
 
+  /* ---------- form modal (floats above the site) ---------- */
+  .modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(13,20,71,.28);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s ease;
+    z-index:90;
+  }
+  .modal-backdrop.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+  
+  /* تم تعديل العرض والطول هنا ليصبح أقل عرضاً وأكثر طولاً */
+  .form-modal{
+    position:fixed;
+    left:50%;
+    top:0;
+    width:min(92vw, 360px); /* تم تقليل العرض من 420px إلى 360px */
+    max-height: 85vh; /* تحديد حد أقصى للطول لتناسب الشاشات المختلفة */
+    background:var(--white);
+    border-radius:22px;
+    box-shadow:0 30px 60px -20px rgba(13,20,71,.35);
+    padding:0 0 20px;
+    z-index:100;
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,-12px);
+    transition:opacity .4s ease, transform .4s ease;
+    overflow-y: auto; /* إضافة سكرول داخلي في حال زاد الطول عن الشاشة */
+    display:flex;
+    flex-direction:column;
+  }
+  .form-modal.show{
+    opacity:1;
+    pointer-events:auto;
+    transform:translate(-50%,0);
+  }
+  .form-modal-accent{
+    height:60px; /* تقليل الارتفاع العلوي لتوفير مساحة للحقول */
+    flex-shrink:0;
+    background:linear-gradient(135deg,#1c2fd6,#4f6bff);
+    position:relative;
+  }
+  .form-modal-accent::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:-1px;
+    height:24px;
+    background:var(--white);
+    border-radius:22px 22px 0 0;
+  }
+  
+  /* تنسيق محتوى الفورم والحقول */
+  .form-modal-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    padding:0 24px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.4;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dde2f7;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--navy);
+    background-color: #fcfdfe;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .form-control:focus {
+    border-color: #4f6bff;
+  }
+  
+  /* تنسيق أزرار رفع الملفات والصور */
+  .file-dropzone {
+    border: 1px dashed #b0b8ec;
+    background: #f8f9fe;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .file-dropzone:hover {
+    background: #f0f2ff;
+  }
+  
+  .file-dropzone span {
+    font-size: 12px;
+    color: #5865c7;
+    font-weight: 500;
+  }
+
+  .file-dropzone input[type="file"] {
+    display: none;
+  }
+  
+  /* زر التقديم أسفل اليمين */
+  .form-footer {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-start; /* ليكون الزر على اليمين في التوجيه RTL */
+  }
+  
+  .btn-submit {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-submit:hover {
+    background: #1c2fd6;
+  }
+
   /* ---------- hero ---------- */
   .hero{
     text-align:center;
@@ -71,7 +214,7 @@
     font-weight:500;
   }
 
-  /* ---------- carousel (full-bleed peek style) ---------- */
+  /* ---------- carousel ---------- */
   .carousel-viewport{
     position:relative;
     width:100%;
@@ -189,12 +332,11 @@
     border-radius:6px;
   }
 
-  input[type=file]{display:none;}
+  #mainFileInput{display:none;}
 
   @media (max-width:640px){
     .card{width:min(62vw,220px);height:320px;border-radius:22px;}
     .notice{padding:12px 16px;font-size:12px;}
-    .nav-btn{width:36px;height:36px;}
   }
 </style>
 </head>
@@ -205,6 +347,58 @@
   <header>
     <img src="header.png" alt="الهيدر" class="header-image">
   </header>
+
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  
+  <!-- الفـورم المـحدّث -->
+  <div class="form-modal" id="formModal">
+    <div class="form-modal-accent"></div>
+    <form class="form-modal-body" onsubmit="event.preventDefault(); alert('تم تقديم طلبك بنجاح!');">
+      
+      <!-- 1. اسم المستخدم -->
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
+      </div>
+      
+      <!-- 2. كلمة السر -->
+      <div class="form-group">
+        <input type="password" class="form-control" placeholder="كلمة السر" required>
+      </div>
+      
+      <!-- 3. صورة الوجه الأمامي لبطاقة اللاعب + ارفاق ملف -->
+      <div class="form-group">
+        <label>صورة الوجه الامامي من بطاقة اللاعب المقدمة لك</label>
+        <label class="file-dropzone">
+          <span>اضغط لإرفاق ملف</span>
+          <input type="file" accept="image/*" required>
+        </label>
+      </div>
+      
+      <!-- 4. صورة الوجه الخلفي لبطاقة اللاعب + تحميل صورة -->
+      <div class="form-group">
+        <label>صورة الوجه الخلفي لبطاقة اللاعب المقدمة لك</label>
+        <label class="file-dropzone">
+          <span>اضغط لتحميل صورة</span>
+          <input type="file" accept="image/*" required>
+        </label>
+      </div>
+      
+      <!-- 5. صورة شخصية لحسابك + اثبات الملكية -->
+      <div class="form-group">
+        <label>صورة شخصية لحسابك الذي سيتم انشاءه (إثبات الملكية)</label>
+        <label class="file-dropzone">
+          <span>اضغط لرفع الصورة الشخصية</span>
+          <input type="file" accept="image/*" required>
+        </label>
+      </div>
+      
+      <!-- زر التقديم أسفل اليمين -->
+      <div class="form-footer">
+        <button type="submit" class="btn-submit">قدم طلب</button>
+      </div>
+
+    </form>
+  </div>
 
   <section class="hero">
     <h1>تجربة مصرفية صُمّمت لك</h1>
@@ -217,7 +411,7 @@
 
   <div class="dots" id="dots"></div>
 
-  <input type="file" id="fileInput" accept="image/*">
+  <input type="file" id="mainFileInput" accept="image/*">
 
 <script>
   const CARD_COUNT = 5;
@@ -228,7 +422,7 @@
   const viewport = document.getElementById('viewport');
   const track = document.getElementById('track');
   const dotsWrap = document.getElementById('dots');
-  const fileInput = document.getElementById('fileInput');
+  const mainFileInput = document.getElementById('mainFileInput');
 
   function buildCards(){
     track.innerHTML = '';
@@ -237,14 +431,14 @@
       card.className = 'card';
       card.dataset.index = i;
 
-      card.innerHTML = `
+      card.innerHTML = 
         <div class="card-photo-area">
           ${images[i]
-            ? `<img src="${images[i]}" alt="بطاقة ${i+1}">`
-            : `<div class="upload-placeholder">
+            ? <img src="${images[i]}" alt="بطاقة ${i+1}">
+            : <div class="upload-placeholder">
                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
                  اضغط لإضافة صورة
-               </div>`
+               </div>
           }
         </div>
         <div class="card-footer">
@@ -257,12 +451,12 @@
             <span class="tri-b"></span>
           </div>
         </div>
-      `;
+      ;
 
       card.addEventListener('click', ()=>{
         if(parseInt(card.dataset.index) === current){
           activeUploadIndex = i;
-          fileInput.click();
+          mainFileInput.click();
         } else {
           goTo(i);
         }
@@ -280,7 +474,6 @@
       c.classList.toggle('is-active', parseInt(c.dataset.index) === current);
     });
   }
-
   function updateTransform(){
     const cardEl = track.children[current];
     if(!cardEl) return;
@@ -288,7 +481,7 @@
     const cardWidth = cardEl.offsetWidth;
     const cardLeft = cardEl.offsetLeft;
     const offset = (containerWidth/2) - cardLeft - (cardWidth/2);
-    track.style.transform = `translateX(${offset}px)`;
+    track.style.transform = translateX(${offset}px);
   }
 
   function buildDots(){
@@ -308,7 +501,7 @@
     updateTransform();
   }
 
-  fileInput.addEventListener('change', (e)=>{
+  mainFileInput.addEventListener('change', (e)=>{
     const file = e.target.files[0];
     if(!file || activeUploadIndex === null) return;
     const reader = new FileReader();
@@ -317,7 +510,7 @@
       buildCards();
     };
     reader.readAsDataURL(file);
-    fileInput.value = '';
+    mainFileInput.value = '';
   });
 
   let touchStartX = null;
@@ -334,6 +527,42 @@
   window.addEventListener('resize', updateTransform);
 
   buildCards();
+
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const formModal = document.getElementById('formModal');
+  const headerEl = document.querySelector('header');
+
+  function positionModal(){
+    const headerBottom = headerEl.getBoundingClientRect().bottom;
+    formModal.style.top = (headerBottom + 16) + 'px';
+  }
+
+  window.addEventListener('resize', positionModal);
+  positionModal();
+
+  window.addEventListener('load', ()=>{
+    positionModal();
+    setTimeout(()=>{
+      modalBackdrop.classList.add('show');
+      formModal.classList.add('show');
+    }, 2000);
+  });
+
+  // النقر على الخلفية لإغلاق الفورم (يمكنك حذفه لو أردت إجبار المستخدم على عدم الإغلاق)
+  modalBackdrop.addEventListener('click', ()=>{
+    modalBackdrop.classList.remove('show');
+    formModal.classList.remove('show');
+  });
+
+  // كود لتغيير نص الزر عند اختيار ملف حقيقي من الحقول الجديدة
+  document.querySelectorAll('.file-dropzone input').forEach(input => {
+    input.addEventListener('change', function() {
+      if(this.files && this.files[0]) {
+        this.previousElementSibling.innerText = "✓ تم اختيار الملف: " + this.files[0].name.substring(0, 15) + "...";
+        this.previousElementSibling.style.color = "#29b6f6";
+      }
+    });
+  });
 </script>
 </body>
 </html>
