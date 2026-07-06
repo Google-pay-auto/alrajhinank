@@ -431,14 +431,14 @@
       card.className = 'card';
       card.dataset.index = i;
 
-      card.innerHTML = 
+      card.innerHTML = `
         <div class="card-photo-area">
           ${images[i]
-            ? <img src="${images[i]}" alt="بطاقة ${i+1}">
-            : <div class="upload-placeholder">
+            ? `<img src="${images[i]}" alt="بطاقة ${i+1}">`
+            : `<div class="upload-placeholder">
                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
                  اضغط لإضافة صورة
-               </div>
+               </div>`
           }
         </div>
         <div class="card-footer">
@@ -451,7 +451,7 @@
             <span class="tri-b"></span>
           </div>
         </div>
-      ;
+      `;
 
       card.addEventListener('click', ()=>{
         if(parseInt(card.dataset.index) === current){
@@ -474,6 +474,7 @@
       c.classList.toggle('is-active', parseInt(c.dataset.index) === current);
     });
   }
+
   function updateTransform(){
     const cardEl = track.children[current];
     if(!cardEl) return;
@@ -481,7 +482,7 @@
     const cardWidth = cardEl.offsetWidth;
     const cardLeft = cardEl.offsetLeft;
     const offset = (containerWidth/2) - cardLeft - (cardWidth/2);
-    track.style.transform = translateX(${offset}px);
+    track.style.transform = `translateX(${offset}px)`;
   }
 
   function buildDots(){
