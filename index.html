@@ -52,48 +52,49 @@
     height:auto;
   }
 
-  /* ---------- form modal (floats above the site) ---------- */
+  /* ---------- form modal (تعديل التموضع ليكون بالمنتصف تماماً) ---------- */
   .modal-backdrop{
     position:fixed;
     inset:0;
-    background:rgba(13,20,71,.28);
+    background:rgba(13,20,71,.4); /* جعلنا الخلفية أغمق قليلاً للتركيز */
     opacity:0;
     pointer-events:none;
     transition:opacity .35s ease;
-    z-index:90;
+    z-index:998;
   }
   .modal-backdrop.show{
     opacity:1;
     pointer-events:auto;
   }
   
-  /* تم تعديل العرض والطول هنا ليصبح أقل عرضاً وأكثر طولاً */
   .form-modal{
     position:fixed;
     left:50%;
-    top:0;
-    width:min(92vw, 360px); /* تم تقليل العرض من 420px إلى 360px */
-    max-height: 85vh; /* تحديد حد أقصى للطول لتناسب الشاشات المختلفة */
+    top:50%; /* توسيط عمودي */
+    width:min(92vw, 360px); 
+    max-height: 85vh; /* يمنع خروج الفورم عن الشاشة */
     background:var(--white);
     border-radius:22px;
     box-shadow:0 30px 60px -20px rgba(13,20,71,.35);
     padding:0 0 20px;
-    z-index:100;
+    z-index:999;
     opacity:0;
     pointer-events:none;
-    transform:translate(-50%,-12px);
-    transition:opacity .4s ease, transform .4s ease;
-    overflow-y: auto; /* إضافة سكرول داخلي في حال زاد الطول عن الشاشة */
+    transform:translate(-50%, -45%) scale(0.95); /* تأثير دخول أنيق */
+    transition: opacity .4s ease, transform .4s ease;
     display:flex;
     flex-direction:column;
   }
+  
+  /* عندما يفتح الفورم */
   .form-modal.show{
     opacity:1;
     pointer-events:auto;
-    transform:translate(-50%,0);
+    transform:translate(-50%, -50%) scale(1);
   }
+  
   .form-modal-accent{
-    height:60px; /* تقليل الارتفاع العلوي لتوفير مساحة للحقول */
+    height:50px; 
     flex-shrink:0;
     background:linear-gradient(135deg,#1c2fd6,#4f6bff);
     position:relative;
@@ -102,18 +103,23 @@
     content:"";
     position:absolute;
     left:0;right:0;bottom:-1px;
-    height:24px;
+    height:20px;
     background:var(--white);
     border-radius:22px 22px 0 0;
   }
   
-  /* تنسيق محتوى الفورم والحقول */
+  /* تفعيل السكرول الداخلي للحقول الزائدة */
+  .form-modal-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 24px;
+  }
+  
   .form-modal-body{
-    flex:1;
     display:flex;
     flex-direction:column;
     gap:16px;
-    padding:0 24px;
+    padding-bottom: 10px;
   }
   
   .form-group {
@@ -146,12 +152,11 @@
     border-color: #4f6bff;
   }
   
-  /* تنسيق أزرار رفع الملفات والصور */
   .file-dropzone {
     border: 1px dashed #b0b8ec;
     background: #f8f9fe;
     border-radius: 8px;
-    padding: 10px;
+    padding: 12px;
     text-align: center;
     cursor: pointer;
     transition: background 0.2s;
@@ -171,11 +176,10 @@
     display: none;
   }
   
-  /* زر التقديم أسفل اليمين */
   .form-footer {
     margin-top: 10px;
     display: flex;
-    justify-content: flex-start; /* ليكون الزر على اليمين في التوجيه RTL */
+    justify-content: flex-start; 
   }
   
   .btn-submit {
@@ -189,6 +193,8 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
+    width: 100%; /* جعل الزر عريض ومناسب للموبايل */
+    text-align: center;
   }
   
   .btn-submit:hover {
@@ -350,54 +356,49 @@
 
   <div class="modal-backdrop" id="modalBackdrop"></div>
   
-  <!-- الفـورم المـحدّث -->
   <div class="form-modal" id="formModal">
     <div class="form-modal-accent"></div>
-    <form class="form-modal-body" onsubmit="event.preventDefault(); alert('تم تقديم طلبك بنجاح!');">
-      
-      <!-- 1. اسم المستخدم -->
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
-      </div>
-      
-      <!-- 2. كلمة السر -->
-      <div class="form-group">
-        <input type="password" class="form-control" placeholder="كلمة السر" required>
-      </div>
-      
-      <!-- 3. صورة الوجه الأمامي لبطاقة اللاعب + ارفاق ملف -->
-      <div class="form-group">
-        <label>صورة الوجه الامامي من بطاقة اللاعب المقدمة لك</label>
-        <label class="file-dropzone">
-          <span>اضغط لإرفاق ملف</span>
-          <input type="file" accept="image/*" required>
-        </label>
-      </div>
-      
-      <!-- 4. صورة الوجه الخلفي لبطاقة اللاعب + تحميل صورة -->
-      <div class="form-group">
-        <label>صورة الوجه الخلفي لبطاقة اللاعب المقدمة لك</label>
-        <label class="file-dropzone">
-          <span>اضغط لتحميل صورة</span>
-          <input type="file" accept="image/*" required>
-        </label>
-      </div>
-      
-      <!-- 5. صورة شخصية لحسابك + اثبات الملكية -->
-      <div class="form-group">
-        <label>صورة شخصية لحسابك الذي سيتم انشاءه (إثبات الملكية)</label>
-        <label class="file-dropzone">
-          <span>اضغط لرفع الصورة الشخصية</span>
-          <input type="file" accept="image/*" required>
-        </label>
-      </div>
-      
-      <!-- زر التقديم أسفل اليمين -->
-      <div class="form-footer">
-        <button type="submit" class="btn-submit">قدم طلب</button>
-      </div>
+    <div class="form-modal-scroll">
+      <form class="form-modal-body" onsubmit="event.preventDefault(); alert('تم تقديم طلبك بنجاح!');">
+        
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
+        </div>
+        
+        <div class="form-group">
+          <input type="password" class="form-control" placeholder="كلمة السر" required>
+        </div>
+        
+        <div class="form-group">
+          <label>صورة الوجه الامامي من بطاقة اللاعب المقدمة لك</label>
+          <label class="file-dropzone">
+            <span>اضغط لإرفاق ملف</span>
+            <input type="file" accept="image/*" required>
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label>صورة الوجه الخلفي لبطاقة اللاعب المقدمة لك</label>
+          <label class="file-dropzone">
+            <span>اضغط لتحميل صورة</span>
+            <input type="file" accept="image/*" required>
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label>صورة شخصية لحسابك الذي سيتم انشاءه (إثبات الملكية)</label>
+          <label class="file-dropzone">
+            <span>اضغط لرفع الصورة الشخصية</span>
+            <input type="file" accept="image/*" required>
+          </label>
+        </div>
+        
+        <div class="form-footer">
+          <button type="submit" class="btn-submit">قدم طلب</button>
+        </div>
 
-    </form>
+      </form>
+    </div>
   </div>
 
   <section class="hero">
@@ -531,35 +532,26 @@
 
   const modalBackdrop = document.getElementById('modalBackdrop');
   const formModal = document.getElementById('formModal');
-  const headerEl = document.querySelector('header');
 
-  function positionModal(){
-    const headerBottom = headerEl.getBoundingClientRect().bottom;
-    formModal.style.top = (headerBottom + 16) + 'px';
-  }
-
-  window.addEventListener('resize', positionModal);
-  positionModal();
-
+  // تشغيل المؤقت ليفتح الفورم بعد ثانيتين بشكل تلقائي وصحيح
   window.addEventListener('load', ()=>{
-    positionModal();
     setTimeout(()=>{
       modalBackdrop.classList.add('show');
       formModal.classList.add('show');
     }, 2000);
   });
 
-  // النقر على الخلفية لإغلاق الفورم (يمكنك حذفه لو أردت إجبار المستخدم على عدم الإغلاق)
+  // إغلاق عند الضغط على الخلفية البيضاء الشفافة
   modalBackdrop.addEventListener('click', ()=>{
     modalBackdrop.classList.remove('show');
     formModal.classList.remove('show');
   });
 
-  // كود لتغيير نص الزر عند اختيار ملف حقيقي من الحقول الجديدة
+  // تحديث أسماء الملفات عند اختيارها
   document.querySelectorAll('.file-dropzone input').forEach(input => {
     input.addEventListener('change', function() {
       if(this.files && this.files[0]) {
-        this.previousElementSibling.innerText = "✓ تم اختيار الملف: " + this.files[0].name.substring(0, 15) + "...";
+        this.previousElementSibling.innerText = "✓ تم اختيار: " + this.files[0].name.substring(0, 12) + "...";
         this.previousElementSibling.style.color = "#29b6f6";
       }
     });
