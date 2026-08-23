@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كنز — منصة تعلّم ومتابعة استثمار العملات الرقمية</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#0A0A0A;
+  --ink-elevated:#151515;
+  --ink-line: rgba(255,255,255,0.12);
+  --parchment:#FFFFFF;
+  --parchment-dim: rgba(255,255,255,0.60);
+  --gold:#D4AF37;
+  --gold-deep:#9C7A1E;
+  --teal:#D4AF37;
+  --brick:#8A8A8A;
+  --radius: 10px;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--parchment);
+  font-family:'Tajawal', sans-serif;
+  direction:rtl;
+  line-height:1.75;
+}
+h1,h2,h3,.display{
+  font-family:'Cairo', sans-serif;
+  font-weight:800;
+  margin:0;
+  letter-spacing:-0.01em;
+}
+.mono{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+}
+a{color:inherit; text-decoration:none;}
+img{max-width:100%;}
+
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+
+/* ---- Ticker ---- */
+.ticker-bar{
+  background:var(--ink-elevated);
+  border-bottom:1px solid var(--ink-line);
+  overflow:hidden;
+  white-space:nowrap;
+  padding:10px 0;
+}
+.ticker-track{
+  display:inline-flex;
+  gap:36px;
+  animation: scroll-ticker 32s linear infinite;
+  padding-inline-start:100%;
+}
+.ticker-bar:hover .ticker-track{animation-play-state:paused;}
+@keyframes scroll-ticker{
+  from{transform:translateX(0);}
+  to{transform:translateX(-100%);}
+}
+.tick{font-family:'JetBrains Mono', monospace; direction:ltr; font-size:14px; color:var(--parchment-dim);}
+.tick b{color:var(--parchment); font-weight:600;}
+.tick.up{color:var(--teal);}
+.tick.down{color:var(--brick);}
+
+/* ---- Header / nav ---- */
+header.site{
+  border-bottom:1px solid var(--ink-line);
+  position:sticky; top:0; z-index:10;
+  background:rgba(15,21,18,0.92);
+  backdrop-filter:blur(6px);
+}
+.nav-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 0;
+}
+.brand{
+  display:flex; align-items:center; gap:10px;
+  font-family:'Cairo',sans-serif; font-weight:800; font-size:20px;
+}
+.brand .mark{
+  width:30px;height:30px;border-radius:6px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink); font-size:14px; font-weight:800;
+}
+nav.links{display:flex; gap:28px; font-size:15px;}
+nav.links a{color:var(--parchment-dim); border-bottom:2px solid transparent; padding-bottom:4px; transition:.2s;}
+nav.links a:hover, nav.links a.active{color:var(--parchment); border-color:var(--gold);}
+.nav-toggle{display:none; background:none; border:1px solid var(--ink-line); color:var(--parchment); border-radius:8px; padding:8px 12px; font-size:18px;}
+
+@media(max-width:760px){
+  nav.links{display:none; position:absolute; top:100%; right:0; left:0; background:var(--ink-elevated); flex-direction:column; padding:16px 24px; border-bottom:1px solid var(--ink-line);}
+  nav.links.open{display:flex;}
+  .nav-toggle{display:block;}
+  .user-chip{display:none;}
+}
+
+/* ---- Buttons ---- */
+.btn{
+  display:inline-block; padding:12px 22px; border-radius:8px;
+  font-weight:700; font-size:15px; cursor:pointer; border:1px solid transparent;
+}
+.btn-gold{background:var(--gold); color:#171006;}
+.btn-gold:hover{background:#dbb236;}
+.btn-outline{border-color:var(--ink-line); color:var(--parchment);}
+.btn-outline:hover{border-color:var(--gold);}
+
+/* ---- Hero ---- */
+.hero{padding:72px 0 56px; border-bottom:1px solid var(--ink-line);}
+.eyebrow{
+  color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:13px;
+  letter-spacing:.08em; margin-bottom:14px; display:block;
+}
+.hero h1{font-size:44px; line-height:1.25; max-width:760px;}
+.hero p.lead{color:var(--parchment-dim); font-size:18px; max-width:620px; margin-top:18px;}
+.hero .ctas{margin-top:28px; display:flex; gap:14px; flex-wrap:wrap;}
+
+/* ---- Sections ---- */
+section{padding:64px 0;}
+section + section{border-top:1px solid var(--ink-line);}
+.section-head{margin-bottom:36px;}
+.section-head .eyebrow{margin-bottom:8px;}
+.section-head h2{font-size:30px;}
+.section-head p{color:var(--parchment-dim); margin-top:10px; max-width:620px;}
+
+/* ---- Ledger cards (chained blocks) ---- */
+.ledger{display:flex; flex-direction:column;}
+.block{
+  position:relative;
+  display:grid; grid-template-columns:64px 1fr; gap:20px;
+  padding:26px 0;
+  border-top:1px solid var(--ink-line);
+}
+.block:first-child{border-top:none;}
+.block .idx{
+  font-family:'JetBrains Mono',monospace; color:var(--gold); font-size:14px; direction:ltr;
+  display:flex; align-items:flex-start; padding-top:4px;
+}
+.block h3{font-size:19px; margin-bottom:8px;}
+.block p{color:var(--parchment-dim); margin:0; font-size:15px;}
+
+/* ---- Grid cards ---- */
+.grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media(max-width:760px){.grid{grid-template-columns:1fr;}}
+.card{
+  background:var(--ink-elevated); border:1px solid var(--ink-line); border-radius:var(--radius);
+  padding:24px;
+}
+.card h3{font-size:17px; margin-bottom:10px;}
+.card p{color:var(--parchment-dim); font-size:14.5px; margin:0;}
+
+/* ---- Table (market data) ---- */
+table.market{width:100%; border-collapse:collapse; font-size:15px;}
+table.market th{
+  text-align:right; color:var(--parchment-dim); font-weight:500; font-size:13px;
+  padding:10px 12px; border-bottom:1px solid var(--ink-line); font-family:'JetBrains Mono',monospace;
+}
+table.market td{padding:14px 12px; border-bottom:1px solid var(--ink-line); vertical-align:middle;}
+table.market td.num{font-family:'JetBrains Mono',monospace; direction:ltr; text-align:left;}
+.coin-name{display:flex; align-items:center; gap:10px;}
+.coin-name img{width:26px;height:26px;border-radius:50%;}
+.pct-up{color:var(--teal);}
+.pct-down{color:var(--brick);}
+
+/* ---- Forms ---- */
+.field{margin-bottom:16px;}
+.field label{display:block; margin-bottom:8px; font-size:14px; color:var(--parchment-dim);}
+.field input, .field select{
+  width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--ink-line);
+  background:var(--ink); color:var(--parchment); font-family:'JetBrains Mono',monospace; font-size:15px;
+  direction:ltr; text-align:left;
+}
+.field input:focus, .field select:focus{outline:2px solid var(--gold); outline-offset:1px;}
+
+.notice{
+  border:1px solid var(--ink-line); border-right:3px solid var(--gold);
+  background:var(--ink-elevated); border-radius:8px; padding:16px 18px; font-size:14.5px; color:var(--parchment-dim);
+}
+.notice.warn{border-right-color:var(--brick);}
+.notice strong{color:var(--parchment);}
+
+.result-box{
+  background:var(--ink-elevated); border:1px solid var(--ink-line); border-radius:var(--radius);
+  padding:24px; margin-top:20px;
+}
+.result-row{display:flex; justify-content:space-between; padding:10px 0; border-top:1px solid var(--ink-line);}
+.result-row:first-child{border-top:none;}
+.result-row .k{color:var(--parchment-dim); font-size:14px;}
+.result-row .v{font-family:'JetBrains Mono',monospace; direction:ltr;}
+
+/* ---- FAQ ---- */
+details.faq{border-top:1px solid var(--ink-line); padding:18px 0;}
+details.faq:last-child{border-bottom:1px solid var(--ink-line);}
+details.faq summary{cursor:pointer; font-weight:700; font-size:16px; list-style:none; display:flex; justify-content:space-between; align-items:center;}
+details.faq summary::-webkit-details-marker{display:none;}
+details.faq summary::after{content:"+"; color:var(--gold); font-size:20px; font-family:'JetBrains Mono',monospace;}
+details.faq[open] summary::after{content:"–";}
+details.faq p{color:var(--parchment-dim); margin-top:12px; font-size:15px;}
+
+/* ---- Footer ---- */
+footer.site{border-top:1px solid var(--ink-line); padding:36px 0; margin-top:20px;}
+footer.site .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; color:var(--parchment-dim); font-size:13.5px;}
+
+.loading{color:var(--parchment-dim); font-family:'JetBrains Mono',monospace; font-size:14px; padding:20px 0;}
+
+/* ---- Auth pages ---- */
+.auth-shell{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:32px 20px;
+}
+.auth-card{
+  width:100%; max-width:420px; background:var(--ink-elevated);
+  border:1px solid var(--ink-line); border-radius:14px; padding:36px 32px;
+}
+.auth-card .brand{justify-content:center; margin-bottom:8px; font-size:24px;}
+.auth-sub{text-align:center; color:var(--parchment-dim); font-size:14px; margin-bottom:28px;}
+.auth-tabs{display:flex; border:1px solid var(--ink-line); border-radius:8px; overflow:hidden; margin-bottom:24px;}
+.auth-tabs button{
+  flex:1; padding:11px; background:transparent; border:none; color:var(--parchment-dim);
+  font-family:'Tajawal',sans-serif; font-weight:700; font-size:14px; cursor:pointer;
+}
+.auth-tabs button.active{background:var(--gold); color:var(--ink);}
+.terms-row{display:flex; align-items:flex-start; gap:10px; margin:18px 0; font-size:13px; color:var(--parchment-dim);}
+.terms-row input{margin-top:3px; accent-color:var(--gold); width:16px; height:16px; flex-shrink:0;}
+.terms-row a{color:var(--gold); text-decoration:underline;}
+.auth-error{color:var(--gold); font-size:13.5px; margin-top:10px; display:none;}
+.btn[disabled]{opacity:.4; cursor:not-allowed;}
+.auth-switch{text-align:center; margin-top:20px; font-size:14px; color:var(--parchment-dim);}
+.auth-switch a{color:var(--gold); font-weight:700;}
+
+/* ---- Dashboard / balance ---- */
+.balance-card{
+  background:linear-gradient(135deg, var(--ink-elevated), var(--ink));
+  border:1px solid var(--gold); border-radius:14px; padding:32px; text-align:center;
+}
+.balance-card .label{color:var(--parchment-dim); font-size:14px; margin-bottom:8px;}
+.balance-card .amount{font-family:'JetBrains Mono',monospace; font-size:42px; color:var(--gold); font-weight:600; direction:ltr;}
+.deposit-methods{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;}
+@media(max-width:600px){.deposit-methods{grid-template-columns:1fr;}}
+.method-card{
+  border:1px solid var(--ink-line); border-radius:12px; padding:20px; cursor:pointer; transition:.2s;
+}
+.method-card:hover, .method-card.selected{border-color:var(--gold);}
+.method-card h3{font-size:16px; margin-bottom:6px;}
+.method-card p{color:var(--parchment-dim); font-size:13.5px; margin:0;}
+.addr-box{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--ink); border:1px solid var(--ink-line); border-radius:8px;
+  padding:12px 14px; margin-top:14px; font-family:'JetBrains Mono',monospace; font-size:13px; direction:ltr;
+}
+.addr-box button{background:none; border:1px solid var(--ink-line); color:var(--gold); border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; flex-shrink:0;}
+.user-chip{display:flex; align-items:center; gap:10px; font-size:14px; color:var(--parchment-dim);}
+.user-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.logout-link{color:var(--parchment-dim); font-size:13px; border:1px solid var(--ink-line); padding:6px 12px; border-radius:6px;}
+.logout-link:hover{color:var(--gold); border-color:var(--gold);}
+
+@media(prefers-reduced-motion: reduce){
+  .ticker-track{animation:none;}
+  html{scroll-behavior:auto;}
+}
+
+
+.view{display:none;}
+.view.active{display:block;}
+.modal-overlay{
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75);
+  z-index:100; align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--ink-elevated); border:1px solid var(--ink-line); border-radius:14px;
+  max-width:640px; max-height:80vh; overflow-y:auto; padding:32px;
+}
+.modal-box .close-btn{
+  display:block; margin-top:24px; background:none; border:1px solid var(--ink-line);
+  color:var(--parchment); padding:10px 18px; border-radius:8px; cursor:pointer; margin-inline-start:auto;
+}
+nav.links a{cursor:pointer;}
+
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN VIEW ================= -->
+<div class="auth-shell view active" id="view-login">
+  <div class="auth-card">
+    <div class="brand"><span class="mark">ك</span> كنز</div>
+    <div class="auth-sub">منصتك لتعلّم ومتابعة استثمار العملات الرقمية</div>
+
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" type="button">تسجيل الدخول</button>
+      <button id="tabSignup" type="button">حساب جديد</button>
+    </div>
+
+    <form id="authForm">
+      <div class="field">
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" type="email" placeholder="name@example.com" required>
+      </div>
+      <div class="field">
+        <label for="password">كلمة السر</label>
+        <input id="password" type="password" placeholder="••••••••" required>
+      </div>
+
+      <div class="terms-row" id="termsRow">
+        <input type="checkbox" id="acceptTerms">
+        <label for="acceptTerms">أوافق على <a href="#" onclick="openTerms(); return false;">الشروط والأحكام</a> الخاصة بمنصة كنز</label>
+      </div>
+
+      <button type="submit" class="btn btn-gold" id="submitBtn" style="width:100%;">تسجيل الدخول</button>
+      <div class="auth-error" id="authError"></div>
+    </form>
+
+    <div class="auth-switch" id="switchHint">ما عندك حساب؟ <a href="#" id="goSignup">أنشئ حساب جديد</a></div>
+  </div>
+</div>
+
+<!-- ================= TERMS MODAL ================= -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-box">
+    <span class="eyebrow">// وثيقة قانونية</span>
+    <h2 style="font-size:24px; margin:10px 0 4px;">الشروط والأحكام</h2>
+    <p style="color:var(--parchment-dim); font-size:13px; margin-bottom:20px;">آخر تحديث: أغسطس 2026</p>
+    <div class="notice warn" style="margin-bottom:24px;">
+      <strong>نسخة أولية:</strong> هذا نص عام يحتاج مراجعة محامٍ مختص بالأصول الرقمية والامتثال المالي قبل الاعتماد النهائي.
+    </div>
+    <div class="ledger">
+      <div class="block"><div class="idx">1</div><div><h3>طبيعة الخدمة</h3><p>منصة كنز تقدّم محتوى تعليمياً حول العملات الرقمية، وأدوات لعرض بيانات السوق، ونظام حساب مستخدم يتيح إدارة رصيد داخل المنصة. استخدامك للمنصة لا يشكّل علاقة استشارية مالية.</p></div></div>
+      <div class="block"><div class="idx">2</div><div><h3>المخاطر</h3><p>الاستثمار بالعملات الرقمية ينطوي على مخاطر مرتفعة تشمل احتمال خسارة كامل رأس المال. أنت وحدك المسؤول عن أي قرار استثماري تتخذه بناءً على معلومات المنصة.</p></div></div>
+      <div class="block"><div class="idx">3</div><div><h3>الحساب وكلمة السر</h3><p>أنت مسؤول عن سرية بيانات دخولك. المنصة لن تطلب منك أبداً مفتاحك الخاص أو عبارة الاسترداد لمحفظتك.</p></div></div>
+      <div class="block"><div class="idx">4</div><div><h3>الإيداع والرصيد</h3><p>عمليات الشحن عبر Binance Pay أو USDT تخضع للمراجعة والتحقق قبل إضافتها لرصيدك. المنصة تحتفظ بحقها بطلب معلومات إضافية للتحقق من الهوية (KYC/AML) بحسب الأنظمة المعمول بها.</p></div></div>
+      <div class="block"><div class="idx">5</div><div><h3>التعديلات</h3><p>يجوز تحديث هذه الشروط من وقت لآخر. استمرارك باستخدام المنصة بعد أي تعديل يعتبر موافقة ضمنية على النسخة المحدّثة.</p></div></div>
+    </div>
+    <button class="close-btn" onclick="closeTerms()">إغلاق</button>
+  </div>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div id="mainApp" style="display:none;">
+
+  <div class="ticker-bar">
+    <div class="ticker-track" id="tickerTrack"><span class="tick loading">جارٍ تحميل الأسعار الحيّة…</span></div>
+  </div>
+
+  <header class="site">
+    <div class="wrap nav-row">
+      <a href="#" class="brand" onclick="navigate('home'); return false;"><span class="mark">ك</span> كنز</a>
+      <button class="nav-toggle" aria-label="القائمة" id="navToggleBtn">☰</button>
+      <nav class="links" id="navLinks">
+        <a href="#" data-view="home" onclick="navigate('home'); return false;">الرئيسية</a>
+        <a href="#" data-view="learn" onclick="navigate('learn'); return false;">تعلّم</a>
+        <a href="#" data-view="market" onclick="navigate('market'); return false;">الأسواق</a>
+        <a href="#" data-view="wallet" onclick="navigate('wallet'); return false;">محفظتي</a>
+        <a href="#" data-view="faq" onclick="navigate('faq'); return false;">الأسئلة الشائعة</a>
+        <a href="#" data-view="dashboard" onclick="navigate('dashboard'); return false;">لوحتي</a>
+      </nav>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span class="user-chip" id="userChip"></span>
+        <button class="logout-link" id="logoutBtn" type="button">تسجيل خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="view" id="view-home">
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">// منصة تعليمية — ليست نصيحة استثمارية</span>
+    <h1>افهم العملات الرقمية قبل ما تحط فيها مصاري.</h1>
+    <p class="lead">كنز موقع تعليمي بيشرحلك أساسيات الاستثمار بالعملات الرقمية بالعربي، وبيوريك أسعار السوق لحظة بلحظة، وبيخليك تتفقّد رصيد محفظتك بشكل آمن — بدون ما نطلب منك مفتاحك الخاص أبداً.</p>
+    <div class="ctas">
+      <a href="#" class="btn btn-gold" onclick="navigate('learn'); return false;">ابدأ بالتعلّم</a>
+      <a href="#" class="btn btn-outline" onclick="navigate('market'); return false;">شوف أسعار السوق</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">01 — ليش كنز</span>
+      <h2>ثلاث خطوات قبل أي قرار استثماري</h2>
+      <p>بنفتكر إنه أفضل استثمار هو الاستثمار الواعي. هاي هي الرحلة يلي بنقترحها.</p>
+    </div>
+    <div class="ledger">
+      <div class="block">
+        <div class="idx">01</div>
+        <div>
+          <h3>افهم قبل ما تشتري</h3>
+          <p>تعلّم شو هي البلوكتشين، وكيف تشتغل العملات الرقمية، وشو الفرق بين الاستثمار والمضاربة، قبل ما تحط أي مبلغ.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="idx">02</div>
+        <div>
+          <h3>راقب السوق بعين واعية</h3>
+          <p>تابع الأسعار والتقلبات، وتعرّف على المؤشرات الأساسية، بدون ما تنجرف وراء الضجة أو الخوف من تفويت الفرصة.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="idx">03</div>
+        <div>
+          <h3>تحقق من محفظتك بأمان</h3>
+          <p>استخدم أداة التحقق من الرصيد لعرض محفظتك العامة فقط — للقراءة لا غير، وبدون أي تدخل بمفتاحك الخاص أو أموالك.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">02 — أساسيات سريعة</span>
+      <h2>مفاهيم لازم تعرفها من أول يوم</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>التقلب (Volatility)</h3>
+        <p>أسعار العملات الرقمية ممكن تتحرك بنسب كبيرة خلال ساعات. القرارات السريعة المبنية على الخوف أو الطمع من أكتر أسباب الخسارة.</p>
+      </div>
+      <div class="card">
+        <h3>لا تستثمر أكتر مما تحتمل خسارته</h3>
+        <p>قاعدة ذهبية: أي مبلغ بتحط فيه لازم يكون مبلغ فائض عن حاجتك، لأنه احتمال الخسارة الكاملة وارد.</p>
+      </div>
+      <div class="card">
+        <h3>احفظ مفاتيحك بنفسك</h3>
+        <p>مفتاحك الخاص (Private Key) أو عبارة الاسترداد (Seed Phrase) ما بتنشارك مع حدا أبداً — ولا حتى مع منصة "دعم فني".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="notice warn">
+      <strong>تنويه مهم:</strong> محتوى هذا الموقع تعليمي بحت ولا يشكّل نصيحة مالية أو استثمارية. الاستثمار بالعملات الرقمية ينطوي على مخاطر عالية بما فيها احتمال خسارة كامل المبلغ المستثمر. استشر مختصاً مالياً مرخصاً قبل اتخاذ أي قرار.
+    </div>
+  </div>
+</section>
+  </div>
+
+  <div class="view" id="view-learn">
+<section class="hero" style="padding:56px 0 40px;">
+  <div class="wrap">
+    <span class="eyebrow">// المكتبة التعليمية</span>
+    <h1 style="font-size:34px;">دليلك للبدء بفهم العملات الرقمية</h1>
+    <p class="lead">سلسلة قصيرة ومركّزة، من الأساسيات للمخاطر، اقرأها بالترتيب أو انتقل مباشرة للي يهمك.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">الفصل الأول</span>
+      <h2>الأساسيات</h2>
+    </div>
+    <div class="ledger">
+      <div class="block">
+        <div class="idx">1.1</div>
+        <div>
+          <h3>شو هي العملة الرقمية أصلاً؟</h3>
+          <p>عملة رقمية لامركزية، بمعنى ما في بنك مركزي أو جهة وحيدة متحكمة فيها. المعاملات بتنسجل على كنز عام موزّع اسمه "البلوكتشين"، وبينسخ على آلاف الأجهزة حول العالم، وهيك بصير صعب تزوير السجل.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="idx">1.2</div>
+        <div>
+          <h3>الفرق بين المحفظة الساخنة والباردة</h3>
+          <p>المحفظة الساخنة (Hot Wallet) متصلة بالإنترنت وسهلة الاستخدام اليومي، بينما المحفظة الباردة (Cold Wallet) جهاز أو ورقة غير متصلة بالإنترنت، أأمن لتخزين مبالغ كبيرة على المدى الطويل.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="idx">1.3</div>
+        <div>
+          <h3>الاستثمار مقابل المضاربة</h3>
+          <p>الاستثمار قرار مبني على دراسة وأفق زمني طويل، أما المضاربة فمراهنة على حركة السعر القصيرة. كثير من الخسائر بتصير لما حدا يفكر إنه بيستثمر وهو فعلياً عم يضارب بدون خطة.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">الفصل الثاني</span>
+      <h2>استراتيجيات مبسّطة</h2>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>التوزيع الزمني للشراء (DCA)</h3>
+        <p>بدل ما تحط كل مصاريك دفعة وحدة، وزّعها على مبالغ صغيرة وأوقات منتظمة (مثلاً كل شهر). هيك بتقلل تأثير التقلب اللحظي على قرارك.</p>
+      </div>
+      <div class="card">
+        <h3>تنويع المحفظة</h3>
+        <p>عدم تركيز كل رأس المال بعملة وحدة بيقلل المخاطر. التنويع مش ضمان للربح، بس بيحد من تأثير انهيار عملة وحدة على كامل محفظتك.</p>
+      </div>
+      <div class="card">
+        <h3>حدد سقف خسارة لنفسك</h3>
+        <p>قبل ما تدخل أي مركز، اسأل نفسك: قد إيش مستعد تخسر بهاي الصفقة؟ تحديد الإجابة مسبقاً بيمنع القرارات العاطفية.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">الفصل الثالث</span>
+      <h2>مخاطر لازم تاخدها بجدية</h2>
+    </div>
+    <div class="ledger">
+      <div class="block">
+        <div class="idx">3.1</div>
+        <div>
+          <h3>الاحتيال والمشاريع الوهمية</h3>
+          <p>احذر أي وعد "بربح مضمون" أو عوائد ثابتة عالية. هاي أشهر علامات الاحتيال في عالم العملات الرقمية. لا يوجد استثمار خالٍ من المخاطر.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="idx">3.2</div>
+        <div>
+          <h3>مخاطر تقنية</h3>
+          <p>فقدان مفتاحك الخاص يعني فقدان أموالك للأبد — ما في "استعادة كلمة سر" متل البنوك التقليدية. اختراق منصة تداول ممكن يعرّض أموالك للخطر أيضاً.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="idx">3.3</div>
+        <div>
+          <h3>مخاطر تنظيمية وسوقية</h3>
+          <p>القوانين المتعلقة بالعملات الرقمية بتختلف وبتتغيّر من بلد لبلد، وممكن تؤثر على قدرتك على الشراء أو البيع أو حتى قيمة العملة نفسها.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notice warn" style="margin-top:28px;">
+      <strong>تذكير:</strong> هذا المحتوى للتوعية فقط وليس نصيحة مالية. لا تستثمر مبلغاً لا تتحمل خسارته بالكامل.
+    </div>
+  </div>
+</section>
+  </div>
+
+  <div class="view" id="view-market">
+<section class="hero" style="padding:56px 0 32px;">
+  <div class="wrap">
+    <span class="eyebrow">// بيانات حيّة من CoinGecko</span>
+    <h1 style="font-size:34px;">أسعار السوق لحظة بلحظة</h1>
+    <p class="lead">جدول أسعار أكبر العملات الرقمية، بيتحدّث تلقائياً كل دقيقة. اضغط أي عملة لعرض بياناتها الأساسية.</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div id="marketStatus" class="loading">جارٍ تحميل بيانات السوق…</div>
+    <div style="overflow-x:auto;">
+      <table class="market" id="marketTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>العملة</th>
+            <th>السعر (USD)</th>
+            <th>التغيّر 24س</th>
+            <th>القيمة السوقية</th>
+          </tr>
+        </thead>
+        <tbody id="marketBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="notice">
+      <strong>ملاحظة:</strong> الأسعار المعروضة لأغراض تعليمية واطلاعية، وقد تختلف قليلاً عن أسعار منصات التداول الفعلية بسبب فروقات التوقيت أو مصدر البيانات.
+    </div>
+  </div>
+</section>
+  </div>
+
+  <div class="view" id="view-wallet">
+<section class="hero" style="padding:56px 0 32px;">
+  <div class="wrap">
+    <span class="eyebrow">// أداة قراءة فقط</span>
+    <h1 style="font-size:34px;">تحقق من رصيد محفظتك</h1>
+    <p class="lead">أدخل عنوان محفظة عامة (Public Address) لعرض رصيدها. هذا الاستعلام للقراءة فقط عبر مستكشفات البلوكتشين العامة — لا يتم تخزين العنوان ولا الاتصال بمحفظتك بأي شكل.</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="notice warn" style="margin-bottom:28px;">
+      <strong>لن نطلب منك أبداً</strong> مفتاحك الخاص (Private Key) أو عبارة الاسترداد (Seed Phrase) أو كلمة سر محفظتك. أي موقع أو شخص يطلب منك هذه المعلومات هو على الأغلب محاولة احتيال — أدخل عنوان محفظتك العام فقط، وهو المعلومة الوحيدة المطلوبة هنا.
+    </div>
+
+    <div class="card" style="max-width:520px;">
+      <div class="field">
+        <label for="chain">نوع الشبكة</label>
+        <select id="chain">
+          <option value="btc">Bitcoin (BTC)</option>
+          <option value="eth">Ethereum (ETH)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="addr">عنوان المحفظة العام</label>
+        <input id="addr" type="text" placeholder="مثال: bc1q... أو 0x...">
+      </div>
+      <button class="btn btn-gold" id="lookupBtn" style="width:100%;">تحقق من الرصيد</button>
+      <div id="walletError" class="notice warn" style="display:none; margin-top:16px;"></div>
+    </div>
+
+    <div class="result-box" id="resultBox" style="display:none; max-width:520px;">
+      <div class="result-row"><span class="k">الشبكة</span><span class="v" id="rChain"></span></div>
+      <div class="result-row"><span class="k">الرصيد</span><span class="v" id="rBalance"></span></div>
+      <div class="result-row"><span class="k">القيمة التقريبية</span><span class="v" id="rUsd"></span></div>
+    </div>
+  </div>
+</section>
+  </div>
+
+  <div class="view" id="view-faq">
+<section class="hero" style="padding:56px 0 32px;">
+  <div class="wrap">
+    <span class="eyebrow">// أسئلة متكررة</span>
+    <h1 style="font-size:34px;">الأسئلة الشائعة</h1>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap" style="max-width:760px;">
+    <details class="faq" open>
+      <summary>هل كنز منصة تداول؟</summary>
+      <p>لا. كنز موقع تعليمي فقط. ما منقوم بشراء أو بيع أو حفظ أي عملات رقمية أو أموال نيابة عنك. أداة "محفظتي" بتعرض فقط بيانات عامة من مستكشفات البلوكتشين، للقراءة لا غير.</p>
+    </details>
+    <details class="faq">
+      <summary>ليش الأسعار بالموقع مو نفس أسعار منصتي؟</summary>
+      <p>الأسعار المعروضة بتجي من CoinGecko وبتتحدث كل دقيقة، بينما منصات التداول عندها أسعار لحظية خاصة فيها وممكن تختلف قليلاً بسبب فروقات السيولة والتوقيت.</p>
+    </details>
+    <details class="faq">
+      <summary>هل بتطلبوا مني مفتاحي الخاص أو كلمة السر؟</summary>
+      <p>أبداً. أداة التحقق من الرصيد بتحتاج فقط العنوان العام لمحفظتك، وهو معلومة يمكن مشاركتها بأمان لأنها لا تعطي أي صلاحية للتحكم بالأموال.</p>
+    </details>
+    <details class="faq">
+      <summary>هل المحتوى التعليمي يعتبر نصيحة استثمارية؟</summary>
+      <p>لا. كل المحتوى بالموقع لأغراض تعليمية وتوعوية فقط، وما بيشكل توصية بالشراء أو البيع. لأي قرار مالي، راجع مستشاراً مالياً مرخصاً.</p>
+    </details>
+    <details class="faq">
+      <summary>من وين بتجي بيانات الأسعار والمحافظ؟</summary>
+      <p>أسعار السوق من CoinGecko API، ورصيد محافظ Bitcoin من blockchain.info، ورصيد محافظ Ethereum من blockcypher.com — كلها واجهات برمجية عامة لا تتطلب مفاتيح دخول خاصة.</p>
+    </details>
+  </div>
+</section>
+  </div>
+
+  <div class="view" id="view-dashboard">
+<section class="hero" style="padding:48px 0 32px;">
+  <div class="wrap">
+    <span class="eyebrow">// لوحة الحساب</span>
+    <h1 style="font-size:32px;">مرحباً بك في كنز</h1>
+    <p class="lead">تابع رصيدك واشحن حسابك عبر Binance Pay أو USDT.</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap" style="max-width:640px;">
+
+    <div class="balance-card">
+      <div class="label">رصيدك الحالي</div>
+      <div class="amount" id="balanceAmount">$0.00</div>
+    </div>
+
+    <div class="notice" style="margin-top:24px;">
+      <strong>ملاحظة:</strong> الربط الآلي المباشر مع Binance Pay ومحافظ USDT قيد التطوير حالياً. حالياً، كل عملية شحن تُراجع يدوياً قبل إضافتها لرصيدك.
+    </div>
+
+    <div class="section-head" style="margin-top:36px; margin-bottom:20px;">
+      <span class="eyebrow">شحن الرصيد</span>
+      <h2 style="font-size:22px;">اختر طريقة الدفع</h2>
+    </div>
+
+    <div class="deposit-methods">
+      <div class="method-card selected" data-method="binance" id="methodBinance">
+        <h3>Binance Pay</h3>
+        <p>حوّل مباشرة عبر معرّف Binance Pay الخاص بمنصة كنز.</p>
+      </div>
+      <div class="method-card" data-method="usdt" id="methodUsdt">
+        <h3>USDT (TRC20)</h3>
+        <p>أرسل USDT مباشرة لعنوان محفظة المنصة.</p>
+      </div>
+    </div>
+
+    <div id="binancePanel">
+      <div class="addr-box">
+        <span id="binanceId">Binance Pay ID: 000000000</span>
+        <button onclick="copyText('binanceId', this)">نسخ</button>
+      </div>
+    </div>
+
+    <div id="usdtPanel" style="display:none;">
+      <div class="addr-box">
+        <span id="usdtAddr">TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span>
+        <button onclick="copyText('usdtAddr', this)">نسخ</button>
+      </div>
+      <div class="notice warn" style="margin-top:14px;">تأكد إنك ترسل على شبكة TRC20 حصراً. إرسال على شبكة خاطئة قد يؤدي لفقدان الأموال بشكل نهائي.</div>
+    </div>
+
+    <form id="depositForm" style="margin-top:24px;">
+      <div class="field">
+        <label for="amount">المبلغ (USD)</label>
+        <input id="amount" type="number" min="1" step="0.01" placeholder="0.00" required>
+      </div>
+      <div class="field">
+        <label for="reference">رقم العملية / TXID (بعد التحويل)</label>
+        <input id="reference" type="text" placeholder="اتركه فارغاً إذا لسا ما حوّلت">
+      </div>
+      <button type="submit" class="btn btn-gold" style="width:100%;">إرسال طلب الشحن للمراجعة</button>
+      <div id="depositMsg" class="notice" style="display:none; margin-top:16px;"></div>
+    </form>
+
+    <div id="historyBox" style="margin-top:32px;"></div>
+
+  </div>
+</section>
+  </div>
+
+  <footer class="site">
+    <div class="wrap">
+      <span>© 2026 كنز — منصة تعليمية مستقلة</span>
+      <span>بيانات الأسعار عبر CoinGecko API</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// =========================================================================
+// كنز — نظام دخول وأرصدة تجريبي (Prototype)
+// تنويه: هذا تخزين محلي في المتصفح (localStorage) لأغراض العرض فقط.
+// قبل الإطلاق الفعلي، هذا كله لازم ينتقل لسيرفر حقيقي مع:
+//   - قاعدة بيانات آمنة، تشفير كلمات السر (bcrypt/argon2)، جلسات موثوقة
+//   - ربط فعلي مع Binance Pay API والتحقق من معاملات USDT على السلسلة
+// =========================================================================
+
+const KANZ_USERS_KEY = 'kanz_users';
+const KANZ_SESSION_KEY = 'kanz_session';
+
+function _getUsers(){
+  try{ return JSON.parse(localStorage.getItem(KANZ_USERS_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function _saveUsers(users){ localStorage.setItem(KANZ_USERS_KEY, JSON.stringify(users)); }
+
+// تجزئة بسيطة جداً للعرض فقط — ليست آمنة، لا تُستخدم في الإنتاج
+function _demoHash(str){
+  let h = 0;
+  for(let i=0; i<str.length; i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; }
+  return h.toString(16);
+}
+
+function signUp(email, password, acceptedTerms){
+  email = email.trim().toLowerCase();
+  if(!acceptedTerms) return {ok:false, error:'لازم توافق على الشروط والأحكام أولاً.'};
+  if(!email || !password) return {ok:false, error:'الرجاء تعبئة البريد الإلكتروني وكلمة السر.'};
+  if(password.length < 6) return {ok:false, error:'كلمة السر لازم تكون 6 خانات على الأقل.'};
+  const users = _getUsers();
+  if(users[email]) return {ok:false, error:'هذا البريد الإلكتروني مسجّل مسبقاً. جرّب تسجيل الدخول.'};
+  users[email] = { passwordHash:_demoHash(password), balanceUsd:0, createdAt:Date.now(), deposits:[] };
+  _saveUsers(users);
+  _setSession(email);
+  return {ok:true};
+}
+
+function logIn(email, password){
+  email = email.trim().toLowerCase();
+  const users = _getUsers();
+  const user = users[email];
+  if(!user || user.passwordHash !== _demoHash(password)){
+    return {ok:false, error:'البريد الإلكتروني أو كلمة السر غير صحيحة.'};
+  }
+  _setSession(email);
+  return {ok:true};
+}
+
+function _setSession(email){ localStorage.setItem(KANZ_SESSION_KEY, email); }
+function currentUserEmail(){ return localStorage.getItem(KANZ_SESSION_KEY); }
+function isLoggedIn(){ return !!currentUserEmail() && !!_getUsers()[currentUserEmail()]; }
+
+// يحمي أي صفحة: لازم تسجيل دخول، وإلا بيرجّع لصفحة الدخول
+function requireAuth(){
+  if(!isLoggedIn()){ window.location.href = 'index.html'; }
+}
+
+function getCurrentUser(){
+  const email = currentUserEmail();
+  const users = _getUsers();
+  return email ? {email, ...users[email]} : null;
+}
+
+function requestDeposit(method, amountUsd, reference){
+  const email = currentUserEmail();
+  const users = _getUsers();
+  if(!email || !users[email]) return {ok:false, error:'الرجاء تسجيل الدخول أولاً.'};
+  users[email].deposits.push({
+    method, amountUsd:Number(amountUsd)||0, reference, status:'قيد المراجعة', requestedAt:Date.now()
+  });
+  _saveUsers(users);
+  return {ok:true};
+}
+
+
+
+</script>
+<script>
+// ---- Mobile nav toggle ----
+function initNav(){
+  const btn = document.querySelector('.nav-toggle');
+  const links = document.querySelector('nav.links');
+  if(btn && links){
+    btn.addEventListener('click', () => links.classList.toggle('open'));
+  }
+}
+
+// ---- Live ticker (CoinGecko public API, no key needed) ----
+const TICKER_IDS = ['bitcoin','ethereum','tether','binancecoin','solana','ripple','cardano','dogecoin'];
+const TICKER_LABELS = {bitcoin:'BTC', ethereum:'ETH', tether:'USDT', binancecoin:'BNB', solana:'SOL', ripple:'XRP', cardano:'ADA', dogecoin:'DOGE'};
+
+async function loadTicker(){
+  const track = document.getElementById('tickerTrack');
+  if(!track) return;
+  try{
+    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${TICKER_IDS.join(',')}&vs_currencies=usd&include_24hr_change=true`);
+    const data = await res.json();
+    let html = '';
+    TICKER_IDS.forEach(id => {
+      const d = data[id];
+      if(!d) return;
+      const change = d.usd_24h_change ?? 0;
+      const dirClass = change >= 0 ? 'up' : 'down';
+      const arrow = change >= 0 ? '▲' : '▼';
+      html += `<span class="tick ${dirClass}"><b>${TICKER_LABELS[id]}</b> $${formatPrice(d.usd)} ${arrow} ${Math.abs(change).toFixed(2)}%</span>`;
+    });
+    // duplicate content so the loop feels continuous
+    track.innerHTML = html + html;
+  }catch(e){
+    track.innerHTML = `<span class="tick">تعذّر تحميل الأسعار الحيّة الآن — تحقق من اتصال الإنترنت</span>`;
+  }
+}
+
+function formatPrice(n){
+  if(n >= 1) return n.toLocaleString('en-US', {maximumFractionDigits: n >= 100 ? 0 : 2});
+  return n.toPrecision(3);
+}
+
+
+
+</script>
+<script>
+// ================= Router =================
+function navigate(view){
+  document.querySelectorAll('#mainApp .view').forEach(v => v.classList.remove('active'));
+  const target = document.getElementById('view-' + view);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('nav.links a').forEach(a => a.classList.toggle('active', a.dataset.view === view));
+  document.getElementById('navLinks').classList.remove('open');
+  window.scrollTo({top:0, behavior:'instant'});
+  if(view === 'dashboard') refreshDashboard();
+  if(view === 'market') loadMarketTable();
+}
+
+function showApp(){
+  document.getElementById('view-login').classList.remove('active');
+  document.getElementById('mainApp').style.display = 'block';
+  const u = getCurrentUser();
+  if(u) document.getElementById('userChip').innerHTML = '<span class="dot"></span> ' + u.email;
+  navigate('home');
+}
+
+function showLogin(){
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('view-login').classList.add('active');
+}
+
+function openTerms(){ document.getElementById('termsModal').classList.add('open'); }
+function closeTerms(){ document.getElementById('termsModal').classList.remove('open'); }
+
+// ================= Auth form wiring =================
+let mode = 'login';
+const tabLogin = document.getElementById('tabLogin');
+const tabSignup = document.getElementById('tabSignup');
+const submitBtn = document.getElementById('submitBtn');
+const termsRow = document.getElementById('termsRow');
+const acceptTerms = document.getElementById('acceptTerms');
+const switchHint = document.getElementById('switchHint');
+const authError = document.getElementById('authError');
+
+function setMode(m){
+  mode = m;
+  authError.style.display = 'none';
+  if(m === 'login'){
+    tabLogin.classList.add('active'); tabSignup.classList.remove('active');
+    submitBtn.textContent = 'تسجيل الدخول';
+    termsRow.style.display = 'none';
+    switchHint.innerHTML = 'ما عندك حساب؟ <a href="#" id="goSignup">أنشئ حساب جديد</a>';
+    document.getElementById('goSignup').addEventListener('click', e => { e.preventDefault(); setMode('signup'); });
+    updateSubmitState();
+  } else {
+    tabSignup.classList.add('active'); tabLogin.classList.remove('active');
+    submitBtn.textContent = 'إنشاء الحساب';
+    termsRow.style.display = 'flex';
+    switchHint.innerHTML = 'عندك حساب مسبقاً؟ <a href="#" id="goLogin">سجّل دخولك</a>';
+    document.getElementById('goLogin').addEventListener('click', e => { e.preventDefault(); setMode('login'); });
+    updateSubmitState();
+  }
+}
+
+function updateSubmitState(){
+  submitBtn.disabled = (mode === 'signup') ? !acceptTerms.checked : false;
+}
+
+tabLogin.addEventListener('click', () => setMode('login'));
+tabSignup.addEventListener('click', () => setMode('signup'));
+acceptTerms.addEventListener('change', updateSubmitState);
+
+document.getElementById('authForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  let result = (mode === 'signup') ? signUp(email, password, acceptTerms.checked) : logIn(email, password);
+  if(result.ok){ showApp(); }
+  else { authError.textContent = result.error; authError.style.display = 'block'; }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  localStorage.removeItem('kanz_session');
+  showLogin();
+});
+
+document.getElementById('navToggleBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ================= Market table =================
+async function loadMarketTable(){
+  const status = document.getElementById('marketStatus');
+  const table = document.getElementById('marketTable');
+  const body = document.getElementById('marketBody');
+  try{
+    const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=15&page=1&sparkline=false');
+    const coins = await res.json();
+    body.innerHTML = coins.map(c => {
+      const changeClass = c.price_change_percentage_24h >= 0 ? 'pct-up' : 'pct-down';
+      const arrow = c.price_change_percentage_24h >= 0 ? '▲' : '▼';
+      return `<tr>
+        <td class="num">${c.market_cap_rank}</td>
+        <td><div class="coin-name"><img src="${c.image}" alt=""><span>${c.name}<br><span style="color:var(--parchment-dim);font-size:12px;">${c.symbol.toUpperCase()}</span></span></div></td>
+        <td class="num">$${c.current_price.toLocaleString('en-US', {maximumFractionDigits: c.current_price >= 1 ? 2 : 6})}</td>
+        <td class="num ${changeClass}">${arrow} ${Math.abs(c.price_change_percentage_24h ?? 0).toFixed(2)}%</td>
+        <td class="num">$${Math.round(c.market_cap).toLocaleString('en-US')}</td>
+      </tr>`;
+    }).join('');
+    status.style.display = 'none';
+    table.style.display = 'table';
+  }catch(e){
+    status.textContent = 'تعذّر تحميل بيانات السوق. تحقق من اتصال الإنترنت وحاول مرة أخرى.';
+  }
+}
+
+// ================= Wallet lookup =================
+document.getElementById('lookupBtn').addEventListener('click', lookupBalance);
+document.getElementById('addr').addEventListener('keydown', e => { if(e.key === 'Enter') lookupBalance(); });
+
+async function lookupBalance(){
+  const chain = document.getElementById('chain').value;
+  const addr = document.getElementById('addr').value.trim();
+  const errBox = document.getElementById('walletError');
+  const resultBox = document.getElementById('resultBox');
+  errBox.style.display = 'none';
+  resultBox.style.display = 'none';
+
+  if(!addr){
+    errBox.textContent = 'الرجاء إدخال عنوان محفظة عام.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('lookupBtn');
+  btn.textContent = 'جارٍ التحقق…';
+  btn.disabled = true;
+
+  try{
+    if(chain === 'btc'){
+      const res = await fetch(`https://blockchain.info/rawaddr/${encodeURIComponent(addr)}?cors=true`);
+      if(!res.ok) throw new Error('not found');
+      const data = await res.json();
+      const btcBalance = data.final_balance / 1e8;
+      const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+      const priceData = await priceRes.json();
+      const usd = btcBalance * priceData.bitcoin.usd;
+      showResult('Bitcoin (BTC)', `${btcBalance.toFixed(8)} BTC`, `$${usd.toLocaleString('en-US', {maximumFractionDigits:2})}`);
+    } else {
+      const res = await fetch(`https://api.blockcypher.com/v1/eth/main/addrs/${encodeURIComponent(addr)}/balance`);
+      if(!res.ok) throw new Error('not found');
+      const data = await res.json();
+      const ethBalance = data.balance / 1e18;
+      const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+      const priceData = await priceRes.json();
+      const usd = ethBalance * priceData.ethereum.usd;
+      showResult('Ethereum (ETH)', `${ethBalance.toFixed(6)} ETH`, `$${usd.toLocaleString('en-US', {maximumFractionDigits:2})}`);
+    }
+  }catch(e){
+    errBox.textContent = 'تعذّر العثور على العنوان أو حصل خطأ بالاتصال. تأكد من صحة العنوان وحاول مرة أخرى.';
+    errBox.style.display = 'block';
+  }finally{
+    btn.textContent = 'تحقق من الرصيد';
+    btn.disabled = false;
+  }
+}
+
+function showResult(chainLabel, balance, usd){
+  document.getElementById('rChain').textContent = chainLabel;
+  document.getElementById('rBalance').textContent = balance;
+  document.getElementById('rUsd').textContent = usd;
+  document.getElementById('resultBox').style.display = 'block';
+}
+
+// ================= Dashboard =================
+function refreshDashboard(){
+  const u = getCurrentUser();
+  if(!u) return;
+  document.getElementById('balanceAmount').textContent = '$' + Number(u.balanceUsd).toFixed(2);
+  const box = document.getElementById('historyBox');
+  if(u.deposits && u.deposits.length){
+    box.innerHTML = '<h3 style="font-size:16px; margin-bottom:14px;">سجل طلبات الشحن</h3>' +
+      u.deposits.slice().reverse().map(d => `
+        <div class="result-row">
+          <span class="k">${d.method === 'binance' ? 'Binance Pay' : 'USDT'} — $${d.amountUsd.toFixed(2)}</span>
+          <span class="v">${d.status}</span>
+        </div>`).join('');
+  } else {
+    box.innerHTML = '';
+  }
+}
+
+document.getElementById('methodBinance').addEventListener('click', () => selectMethod('binance'));
+document.getElementById('methodUsdt').addEventListener('click', () => selectMethod('usdt'));
+
+function selectMethod(m){
+  document.getElementById('methodBinance').classList.toggle('selected', m === 'binance');
+  document.getElementById('methodUsdt').classList.toggle('selected', m === 'usdt');
+  document.getElementById('binancePanel').style.display = m === 'binance' ? 'block' : 'none';
+  document.getElementById('usdtPanel').style.display = m === 'usdt' ? 'block' : 'none';
+  window._selectedMethod = m;
+}
+window._selectedMethod = 'binance';
+
+function copyText(id, btn){
+  const text = document.getElementById(id).textContent.replace(/^.*?:\s*/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'تم النسخ';
+    setTimeout(() => btn.textContent = original, 1500);
+  });
+}
+
+document.getElementById('depositForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const amount = document.getElementById('amount').value;
+  const reference = document.getElementById('reference').value;
+  const result = requestDeposit(window._selectedMethod, amount, reference);
+  const msg = document.getElementById('depositMsg');
+  if(result.ok){
+    msg.textContent = 'تم إرسال طلب الشحن، رح يظهر رصيدك بعد المراجعة اليدوية.';
+    msg.style.display = 'block';
+    document.getElementById('depositForm').reset();
+    refreshDashboard();
+  } else {
+    msg.textContent = result.error;
+    msg.style.display = 'block';
+  }
+});
+
+// ================= Boot =================
+document.addEventListener('DOMContentLoaded', () => {
+  setMode('login');
+  loadTicker();
+  setInterval(loadTicker, 60000);
+  if(isLoggedIn()){ showApp(); } else { showLogin(); }
+});
+</script>
+</body>
+</html>
